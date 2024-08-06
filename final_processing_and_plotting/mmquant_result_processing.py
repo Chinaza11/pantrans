@@ -73,7 +73,7 @@ def parse_mmquant_result(path):
 # Rio reference genome
 # =============================================================================
 
-rio = parse_mmquant_result("Rio_reference_genome/from_the_cluster/mmquant-slurm-8405642.out")
+rio = parse_mmquant_result("Rio_reference_genome/other_files_ran_on_HPC_environ/mmquant-slurm-8405642.out")
 
 subset_rio_percent = rio[['samples', 'uniquely_mapped_reads_percent', 'ambiguous_hits_percent', 'non_uniquely_mapped_hits_percent', 'unassigned_hits_percent']]
 
@@ -92,7 +92,7 @@ melted_rio_no['Cat'] = 'Rio'
 # Pan-transcriptome
 # =============================================================================
 
-pant = parse_mmquant_result("pantranscriptome/from_the_cluster/mmquant-slurm-6734901.out")
+pant = parse_mmquant_result("pantranscriptome/other_files_ran_on_HPC_environ/mmquant-slurm-6734901.out")
 
 subset_pantrans_percent = pant[['samples', 'uniquely_mapped_reads_percent', 'ambiguous_hits_percent', 'non_uniquely_mapped_hits_percent', 'unassigned_hits_percent']]
 
@@ -121,7 +121,7 @@ for index, cell in combined_percent_df['Categories'].items():
 
 combined_percent_df['samples'] = combined_percent_df['samples'].replace({'069-n02': '069-no2'})
 
-combined_percent_df.to_csv('mmquant_percent.csv', index=False)
+combined_percent_df.to_csv('final_processing_and_plotting/mmquant_percent.csv', index=False)
 
 #------------------------------------------------------------------------------
 
@@ -133,4 +133,4 @@ for index, cell in combined_no_df['Categories'].items():
 
 combined_no_df['samples'] = combined_no_df['samples'].replace({'069-n02': '069-no2'})
 
-combined_no_df.to_csv('mmquant_no.csv', index=False)
+combined_no_df.to_csv('final_processing_and_plotting/mmquant_no.csv', index=False)

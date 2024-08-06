@@ -12,9 +12,9 @@ setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result
 # STAR
 # =============================================================================
 
-star = read.csv("star_alignment.csv")
+star = read.csv("final_processing_and_plotting/star_alignment.csv")
 
-png(file="star_alignment.png", width=14, height=8, units="in", res=500)
+png(file="final_processing_and_plotting/star_alignment.png", width=14, height=8, units="in", res=500)
 
 star_plot = ggplot(star, aes(x = Cat, y = Percentage, fill=factor(Categories, levels=c('Unmapped: other', 'Unmapped: too short', 'Unmapped: too many mismatches', 'Mapped to too many loci', 'Mapped to multiple loci', 'Uniquely mapped')))) + 
               geom_bar(stat = 'identity', position = 'stack') + 
@@ -38,7 +38,7 @@ dev.off()
 # MMQUANT
 # =============================================================================
 
-mmquant = read.csv("mmquant_percent.csv")
+mmquant = read.csv("final_processing_and_plotting/mmquant_percent.csv")
 
 mmquant <- mmquant %>%
   mutate(Categories = str_replace_all(Categories, 
@@ -47,7 +47,7 @@ mmquant <- mmquant %>%
                                   "non_uniquely_mapped_hits" = "Non-uniquely mapped hits",
                                   "unassigned_hits" = "Unassigned hits")))
 
-png(file="mmquant_percent.png", width=14, height=8, units="in", res=500)
+png(file="final_processing_and_plotting/mmquant_percent.png", width=14, height=8, units="in", res=500)
 
 mmquant_plot1 = ggplot(mmquant, aes(x = Cat, y = Percentage, fill=factor(Categories, levels=c('Unassigned hits', 'Non-uniquely mapped hits', 'Ambiguous hits', 'Uniquely mapped hits')))) + 
                   geom_bar(stat = 'identity', position = 'stack') + 
@@ -66,7 +66,7 @@ mmquant_plot1
 dev.off()
 
 
-mmquant = read.csv("mmquant_no.csv")
+mmquant = read.csv("final_processing_and_plotting/mmquant_no.csv")
 
 mmquant <- mmquant %>%
   mutate(Categories = str_replace_all(Categories, 
@@ -75,7 +75,7 @@ mmquant <- mmquant %>%
                                         "non_uniquely_mapped_hits" = "Non-uniquely mapped hits",
                                         "unassigned_hits" = "Unassigned hits")))
 
-png(file="mmquant_no.png", width=14, height=8, units="in", res=500)
+png(file="final_processing_and_plotting/mmquant_no.png", width=14, height=8, units="in", res=500)
 mmquant_plot2 = ggplot(mmquant, aes(x = Cat, y = Million, fill=factor(Categories, levels=c('Unassigned hits', 'Non-uniquely mapped hits', 'Ambiguous hits', 'Uniquely mapped hits')))) + 
                   geom_bar(stat = 'identity', position = 'stack') + 
                   theme_bw() + 
@@ -97,10 +97,11 @@ dev.off()
 # 
 # =============================================================================
 
-png(file="star_n_mmquant_plot.png", width=12, height=12, units="in", res=300)
+png(file="final_processing_and_plotting/star_n_mmquant_plot.png", width=12, height=12, units="in", res=300)
 
 ggarrange(star_plot, mmquant_plot2, 
           nrow=2,
           labels = "AUTO")
 
 dev.off()
+

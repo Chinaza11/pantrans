@@ -89,7 +89,7 @@ int_venn
 # All plots in one
 # =============================================================================
 
-png(file="DEGs_orthogroup_venn.png", width=12, height=12, units="in", res=300)
+png(file="final_processing_and_plotting/DEGs_orthogroup_venn.png", width=12, height=12, units="in", res=300)
 
 blank <- ggplot() + theme_void()
 

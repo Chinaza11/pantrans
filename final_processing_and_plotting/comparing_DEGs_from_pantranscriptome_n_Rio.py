@@ -388,7 +388,7 @@ def comparison(df1, df1_name, df2, df2_name, name):
     #plot venn diagram
     venn2([set(df1_lst), set(df2_lst)], set_labels=(f"{df1_name}", f"{df2_name}"))
     plt.title(f'DEGs Orthogroups ({name})')
-    plt.savefig(f'DEGs_Orthogroups_({name})', dpi=300) 
+    plt.savefig(f'final_processing_and_plotting/DEGs_Orthogroups_({name})', dpi=300) 
     plt.show()
     
 comparison(rio_type, 'Rio-Ref-Genome', pan_type, 'Pan-transcriptome', 'Type')

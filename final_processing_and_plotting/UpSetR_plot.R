@@ -54,7 +54,7 @@ pan_t
 # Both plots in one layout
 # =============================================================================
 
-png("UpSetR_plot.png", width=10, height=10, units="in", res=500)
+png("final_processing_and_plotting/UpSetR_plot.png", width=10, height=10, units="in", res=500)
 
 rio_x = plot_grid(NULL, rio$Main_bar, rio$Sizes, rio$Matrix, 
                   nrow=2, align='hv', rel_heights = c(3.5,1.5), 

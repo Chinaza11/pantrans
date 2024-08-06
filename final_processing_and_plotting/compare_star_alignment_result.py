@@ -13,7 +13,7 @@ os.chdir("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_res
 # Pan-transcriptome
 # =============================================================================
 
-pantrans = pd.read_csv("pantranscriptome_star_alignment_plot.csv")
+pantrans = pd.read_csv("final_processing_and_plotting/pantranscriptome_star_alignment_plot.csv")
 
 pantrans['total'] = pantrans[['Uniquely mapped', 'Mapped to multiple loci', 'Mapped to too many loci', 'Unmapped: too many mismatches', 'Unmapped: too short', 'Unmapped: other']].sum(axis=1)
 pantrans['total_round'] = round(pantrans['total']/1000000)
@@ -35,7 +35,7 @@ melted_pantrans['Cat'] = 'PT'
 # =============================================================================
 # Rio reference genome
 # =============================================================================
-rio = pd.read_csv("rio-ref-genome_star_alignment_plot.csv")
+rio = pd.read_csv("final_processing_and_plotting/rio-ref-genome_star_alignment_plot.csv")
 
 rio['total'] = rio[['Uniquely mapped', 'Mapped to multiple loci', 'Mapped to too many loci', 'Unmapped: too short', 'Unmapped: other']].sum(axis=1)
 rio['total_round'] = round(rio['total']/1000000)
@@ -88,4 +88,4 @@ replacement_dict = {
 
 combined_df['Samples'] = combined_df['Samples'].replace(replacement_dict)
 
-combined_df.to_csv('star_alignment.csv', index=False)
+combined_df.to_csv('final_processing_and_plotting/star_alignment.csv', index=False)

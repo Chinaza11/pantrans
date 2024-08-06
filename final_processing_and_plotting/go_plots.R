@@ -95,25 +95,25 @@ pant_int_plot = get_plot(pant_int_df, 'pantranscriptome')
 # saving plots
 # =============================================================================
 
-png(file="terms_treatment.png", width=16, height=10, units="in", res=300)
+png(file="final_processing_and_plotting/terms_treatment.png", width=16, height=10, units="in", res=300)
 ggpubr::ggarrange(rio_treat_plot, pant_treat_plot,
                   ncol=2, nrow=1,
                   labels = "AUTO")
 dev.off()
 
-png(file="terms_type.png", width=16, height=10, units="in", res=300)
+png(file="final_processing_and_plotting/terms_type.png", width=16, height=10, units="in", res=300)
 ggpubr::ggarrange(rio_type_plot, pant_type_plot,
                   ncol=2, nrow=1,
                   labels = "AUTO")
 dev.off()
 
-png(file="terms_interaction.png", width=16, height=10, units="in", res=300)
+png(file="final_processing_and_plotting/terms_interaction.png", width=16, height=10, units="in", res=300)
 ggpubr::ggarrange(rio_int_plot, pant_int_plot,
                   ncol=2, nrow=1,
                   labels = "AUTO")
 dev.off()
 
-png(file="terms_all.png", width=16, height=10, units="in", res=300)
+png(file="final_processing_and_plotting/terms_all.png", width=16, height=10, units="in", res=300)
 ggpubr::ggarrange(rio_treat_plot, pant_treat_plot,
                   rio_type_plot, pant_type_plot,
                   rio_int_plot, pant_int_plot,
