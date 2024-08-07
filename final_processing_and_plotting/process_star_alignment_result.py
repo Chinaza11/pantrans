@@ -89,3 +89,13 @@ replacement_dict = {
 combined_df['Samples'] = combined_df['Samples'].replace(replacement_dict)
 
 combined_df.to_csv('final_processing_and_plotting/star_alignment.csv', index=False)
+
+# =============================================================================
+# We decided to modify the final figure and group all unmapped categories 
+# together
+# =============================================================================
+
+combined_df['Categories'] = combined_df['Categories'].str.split(':').str[0]
+combined_df = combined_df.groupby(['Samples', 'Categories', 'Cat'], as_index=False)['Percentage'].sum()
+
+combined_df.to_csv('final_processing_and_plotting/star_alignment_2.csv', index=False)
