@@ -46,25 +46,60 @@ common_max = -(min(all_sizes))
 common_min = -(max(all_sizes))
 
 # =============================================================================
+# compare Rio reference genome and the pantranscriptome GO terms and create a
+# column from this for each of the dataframes
+# =============================================================================
+
+compare_go_terms = function(rio_df, pant_df){
+  for(i in 1:nrow(rio_df)){
+    rio_term = rio_df[i, 'representative']
+    if(rio_term %in% pant_df$representative){
+      rio_df[i, 'comparison'] = 'not_unique'
+    } else {
+      rio_df[i, 'comparison'] = 'unique'
+    }
+  }
+  for(i in 1:nrow(pant_df)){
+    pant_term = pant_df[i, 'representative']
+    if(pant_term %in% rio_df$representative){
+      pant_df[i, 'comparison'] = 'not_unique'
+    } else {
+      pant_df[i, 'comparison'] = 'unique'
+    }
+  }
+  return(list(rio_df = rio_df, pant_df = pant_df))
+}
+
+rio_int_df = compare_go_terms(rio_int_df, pant_int_df)$rio_df
+pant_int_df = compare_go_terms(rio_int_df, pant_int_df)$pant_df
+
+rio_type_df = compare_go_terms(rio_type_df, pant_type_df)$rio_df
+pant_type_df = compare_go_terms(rio_type_df, pant_type_df)$pant_df
+
+rio_treat_df = compare_go_terms(rio_treat_df, pant_treat_df)$rio_df
+pant_treat_df = compare_go_terms(rio_treat_df, pant_treat_df)$pant_df
+
+# =============================================================================
 # function for plotting
 # =============================================================================
 
 get_plot = function(df, source){
-  names(df)[names(df) == "colour"] <- "log_pval"
+  names(df)[names(df) == "colour"] = "log_pval"
   df = df %>% select(-size)
   
   df = df %>%
     mutate(members_count = str_count(members, "GO:"))
   
   if(source=="rio"){
-    color="#CC79A7"
+    color="#B9638A"
     } else if(source=="pantranscriptome"){
     color="#0072B2"
   }
-  
-  plot = ggplot(df, aes(x, y)) +
-    geom_point(aes(size=-(log_pval)), color=color, alpha=0.5) +
-    geom_text_repel(data=head(df,15), aes(label=description), size=3.5) +
+
+  plot = ggplot(df, aes(x, y, color=comparison)) +
+    geom_point(aes(size=-(log_pval)), alpha=0.5) +
+    geom_text_repel(data=head(df,15), aes(label=description), size=3.5, color='black') +
+    scale_color_manual(values = c('unique'=color, 'not_unique'='#D3D3D3')) + 
     xlab('') +
     ylab('') +
     xlim(xmin_limit,xmax_limit) +
@@ -73,6 +108,7 @@ get_plot = function(df, source){
                limits=c(common_min,common_max),
                guide="none") +
     theme(
+      legend.position = "none",
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill="white",color=NA),
@@ -121,3 +157,9 @@ ggpubr::ggarrange(rio_treat_plot, pant_treat_plot,
                   labels = "AUTO")
 dev.off()
 
+png(file="final_processing_and_plotting/terms_treatment_n_type.png", width=16, height=16, units="in", res=300)
+ggpubr::ggarrange(rio_treat_plot, pant_treat_plot,
+                  rio_type_plot, pant_type_plot,
+                  ncol=2, nrow=2,
+                  labels = "AUTO")
+dev.off()

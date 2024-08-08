@@ -27,7 +27,8 @@ rio = upset(fromList(rio_listInput),
             sets.x.label="DEGs Per Effect", 
             text.scale=c(1.5, 1.5, 1.25, 1.1, 2, 2), 
             sets.bar.color=c('steelblue','purple','orange'),
-            set_size.scale_max = 2000)
+            set_size.scale_max = 2000,
+            shade.color = "gray50")
 rio
 
 # =============================================================================
@@ -47,7 +48,8 @@ pan_t = upset(fromList(pant_listInput),
               sets.x.label="DEGs Per Effect", 
               text.scale=c(1.5, 1.5, 1.25, 1.1, 2, 2), 
               sets.bar.color=c('steelblue','purple','orange'),
-              set_size.scale_max = 2000)
+              set_size.scale_max = 2000,
+              shade.color = "gray50")
 pan_t
 
 # =============================================================================

@@ -80,7 +80,7 @@ int_venn = ggvenn(
             stroke_linetype = 'blank',
             show_percentage = F,
             set_name_color = 'white',
-            fill_color = c("#CC79A7", "#0072B2"),
+            fill_color = c("#B9638A", "#0072B2"),
             text_size = 6,
             auto_scale = T)
 int_venn
