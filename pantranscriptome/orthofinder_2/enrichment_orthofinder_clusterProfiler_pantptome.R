@@ -97,6 +97,10 @@ for (i in 1:nrow(subset_hyb_genes)) {
   subset_hyb_genes$Species.Tree.Node[i] = paste(unique_entries, collapse = ",")
 }
 
+# to prevent the creation of hybrid genes annotated to 'NA' categories when separate_rows function is applied in the next two codes
+subset_hyb_genes$Species.Tree.Node = gsub('NA,', '', subset_hyb_genes$Species.Tree.Node)
+subset_hyb_genes$Species.Tree.Node = gsub(',NA', '', subset_hyb_genes$Species.Tree.Node)
+
 #------------------------------------------------------------------------------
 
 # merging hybrid genes annotation with other genes annotation
@@ -125,7 +129,7 @@ na_count = sum(is.na(subset_annot$Species.Tree.Node))
 
 treat_enricher = enricher(treat_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
 treat_enricher_df = data.frame(treat_enricher)
-# write.table(treat_enricher_df, "orthofinder_2/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+write.table(treat_enricher_df, "orthofinder_2/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
 barplot(treat_enricher, showCategory=20) 
 
 png(file="orthofinder_2/treat_enricher.png", width=9, height=8, units="in", res=500)
@@ -144,7 +148,7 @@ dev.off()
 #------------------------------------------------------------------------------
 type_enricher = enricher(type_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
 type_enricher_df = data.frame(type_enricher)
-# write.table(type_enricher_df, "orthofinder_2/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+write.table(type_enricher_df, "orthofinder_2/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
 barplot(type_enricher, showCategory=20) 
 
 png(file="orthofinder_2/type_enricher.png", width=9, height=8, units="in", res=500)

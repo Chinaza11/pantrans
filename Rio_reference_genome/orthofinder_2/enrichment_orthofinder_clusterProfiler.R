@@ -101,6 +101,10 @@ for (i in 1:nrow(subset_hyb_genes)) {
   subset_hyb_genes$Species.Tree.Node[i] = paste(unique_entries, collapse = ",")
 }
 
+# to prevent the creation of hybrid genes annotated to 'NA' categories when separate_rows function is applied in the next two codes
+subset_hyb_genes$Species.Tree.Node = gsub('NA,', '', subset_hyb_genes$Species.Tree.Node)
+subset_hyb_genes$Species.Tree.Node = gsub(',NA', '', subset_hyb_genes$Species.Tree.Node)
+
 #------------------------------------------------------------------------------
 
 # merging hybrid genes annotation with other genes annotation

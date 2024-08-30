@@ -2,12 +2,12 @@
 
 #.libPaths("~/rlibs") #------ in HPC environ: uncomment
 
+rm(list=ls()) #------ in HPC environ: comment out
+ls() #------ in HPC environ: comment out
+
 library(dplyr)
 library(stringr)
 library(tibble)
-
-rm(list=ls()) #------ in HPC environ: comment out
-ls() #------ in HPC environ: comment out
 
 # =============================================================================
 # Set up the working directory, and read in raw counts from mmquant
