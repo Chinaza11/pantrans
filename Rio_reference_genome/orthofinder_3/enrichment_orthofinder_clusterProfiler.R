@@ -6,14 +6,15 @@ library(enrichplot)
 library(tidyr)
 library(ggupset)
 library(ggplot2)
+library(dplyr)
 
-setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/pantranscriptome/")
+setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/Rio_reference_genome/")
 
 # =============================================================================
 # read in the annotation file and subset it
 # =============================================================================
 
-annot = read.csv("orthofinder_2/annot_node_ckpt6.csv")
+annot = read.csv("orthofinder_3/annot_node_ckpt6.csv")
 
 subset_annot = annot[c("locusName", "Species.Tree.Node_2")]
 subset_annot = subset_annot %>% rename(Species.Tree.Node = Species.Tree.Node_2)
@@ -28,7 +29,7 @@ table(subset_annot$Species.Tree.Node)
 stats = read.table("glmmseq/glmm-allGenes-results.txt", header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 # creating the gene universe
-gene_universe = rownames(stats)
+gene_universe = gsub("\\.v2\\.1","", rownames(stats))
 
 # create 3 vectors of p-values: one for each factor
 typeList = stats$qvals.Type
@@ -51,7 +52,7 @@ treat_genes = names(subset_treatList)
 int_genes = names(subset_intList)
 
 #------------------------------------------------------------------------------
-# genes were written out to a .txt file so I could compare it with genes from DEGs analysis using the Rio reference genome (comparison of their orthogroups)
+# genes were written out to a .txt file so I could compare it with genes from DEGs analysis using the pantranscriptome (comparison of their orthogroups)
 
 # type_genes_df = data.frame(type_genes)
 # treat_genes_df = data.frame(treat_genes)
@@ -60,6 +61,7 @@ int_genes = names(subset_intList)
 # write.table(type_genes_df, "type_genes_df.txt", quote=FALSE, sep="\t")
 # write.table(treat_genes_df, "treat_genes_df.txt", quote=FALSE, sep="\t")
 # write.table(int_genes_df, "int_genes_df.txt", quote=FALSE, sep="\t")
+
 #------------------------------------------------------------------------------
 # annotating all hybrid genes
 # hybrid genes here means reads that mapped to more than one locus, these genes are joined by "--" e.g. SbRio.02G124800--SbRio.07G193200
@@ -78,6 +80,9 @@ for (i in hyb_index) {
 
 # subseting dataframe to include only the q-vals for type, treatment and interactions
 hyb_genes = hyb_genes[,c(22,23,24)]
+
+# removing ".v2.1" at the end of the genes names
+rownames(hyb_genes) = gsub("\\.v2\\.1","", rownames(hyb_genes)) 
 
 # annotating all hybrid genes
 for (i in 1:length(rownames(hyb_genes))) {
@@ -116,30 +121,26 @@ subset_annot = separate_rows(subset_annot, Species.Tree.Node, sep = ",")
 # switching the columns placement in preparation for enrichment analysis. enricher() and GSEA() functions requires the file to be in TERM2GENE format
 subset_annot = subset_annot[, c("Species.Tree.Node", "locusName")]
 
-na_count = sum(is.na(subset_annot$Species.Tree.Node))
-
 # making sure all NA annotations (from hybrid genes) reads as NA and not as another annotation category called "NA" 
 subset_annot$Species.Tree.Node[subset_annot$Species.Tree.Node == "NA"] = NA
-
-na_count = sum(is.na(subset_annot$Species.Tree.Node))
 
 # stats of annotation
 table(subset_annot$Species.Tree.Node)
 
 # =============================================================================
-# over representation analysis using hypergeometric test. maxGSSize was set as 20,000 
+# over representation analysis using hypergeometric test. maxGSSize was set as 11,000 
 # if not the default of 500 annotation will exclude several genes and lead to wrong
 # result. 
-# Max annotation for any single node is less than 20,000. Use this code to confirm:
+# Max annotation for any single node is less than 11,000. Use this code to confirm:
 # table(subset_annot$Species.Tree.Node)
 # =============================================================================
-
-treat_enricher = enricher(treat_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
+ 
+treat_enricher = enricher(treat_genes, minGSSize=1, maxGSSize=11000, universe=gene_universe, TERM2GENE=subset_annot)
 treat_enricher_df = data.frame(treat_enricher)
-write.table(treat_enricher_df, "orthofinder_2/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+write.table(treat_enricher_df, "orthofinder_3/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
 barplot(treat_enricher, showCategory=20) 
 
-png(file="orthofinder_2/treat_enricher.png", width=9, height=8, units="in", res=500)
+png(file="orthofinder_3/treat_enricher.png", width=9, height=8, units="in", res=500)
 dotplot(treat_enricher, showCategory=30) + 
   ggtitle("Treatment") + 
   theme(
@@ -153,12 +154,13 @@ dotplot(treat_enricher, showCategory=30) +
 dev.off()
 
 #------------------------------------------------------------------------------
-type_enricher = enricher(type_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
+
+type_enricher = enricher(type_genes, minGSSize=1, maxGSSize=11000, universe=gene_universe, TERM2GENE=subset_annot)
 type_enricher_df = data.frame(type_enricher)
-write.table(type_enricher_df, "orthofinder_2/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+write.table(type_enricher_df, "orthofinder_3/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
 barplot(type_enricher, showCategory=20) 
 
-png(file="orthofinder_2/type_enricher.png", width=9, height=8, units="in", res=500)
+png(file="orthofinder_3/type_enricher.png", width=9, height=8, units="in", res=500)
 dotplot(type_enricher, showCategory=30) + 
   ggtitle("Type") + 
   theme(
@@ -172,24 +174,22 @@ dotplot(type_enricher, showCategory=30) +
 dev.off()
 
 #------------------------------------------------------------------------------
-int_enricher = enricher(int_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
+
+int_enricher = enricher(int_genes, minGSSize=1, maxGSSize=11000, universe=gene_universe, TERM2GENE=subset_annot)
 int_enricher_df = data.frame(int_enricher)
+write.table(int_enricher_df, "orthofinder_3/int_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+barplot(int_enricher, showCategory=20) 
 
-# no result so code below was commented out
-
-# write.table(int_enricher_df, "orthofinder_2/int_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-# barplot(int_enricher, showCategory=20) 
-# 
-# png(file="orthofinder_2/int_enricher.png", width=9, height=8, units="in", res=500)
-# dotplot(int_enricher, showCategory=30) + 
-#   ggtitle("Interaction") + 
-#   theme(
-#     plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
-#     axis.title.x = element_text(size = 14, face ="bold"), 
-#     axis.text.x = element_text(size = 12),
-#     axis.text.y = element_text(size = 18, face ="bold"),
-#     legend.text = element_text(size = 12),
-#     legend.title = element_text(size = 14)
-#   )
-# dev.off()
+png(file="orthofinder_3/int_enricher.png", width=9, height=8, units="in", res=500)
+dotplot(int_enricher, showCategory=30) + 
+  ggtitle("Interaction") + 
+  theme(
+    plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
+    axis.title.x = element_text(size = 14, face ="bold"), 
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 18, face ="bold"),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+  )
+dev.off()
 

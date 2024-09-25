@@ -6,7 +6,7 @@ library(tidyr)
 library(dplyr)
 library(ggtree)
 
-setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/Rio_reference_genome/orthofinder_2")
+setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/Rio_reference_genome/orthofinder_3")
 
 # =============================================================================
 # Tree with node labels
@@ -34,15 +34,18 @@ dev.off()
 # Tree with customized node labels
 # =============================================================================
 
-tree$node.label[tree$node.label == "N0"] = "Angiosperms"
-tree$node.label[tree$node.label == "N2"] = "Monocots"
-tree$node.label[tree$node.label == "N4"] = "Poaceae (Grasses)"
-tree$node.label[tree$node.label == "N7"] = "Panicoideae"
-tree$node.label[tree$node.label == "N11"] = "Andropogoneae"
-tree$node.label[tree$node.label == "N13"] = "Sorghum"
-tree$node.label[tree$node.label == "N14"] = "Sorghum (subgroup)"
+tree$node.label[tree$node.label == "N0"] = "Plantae"
+tree$node.label[tree$node.label == "N1"] = "Angiosperms"
+tree$node.label[tree$node.label == "N2"] = "Eudicots"
+tree$node.label[tree$node.label == "N3"] = "Monocots"
+tree$node.label[tree$node.label == "N5"] = "Poales"
+tree$node.label[tree$node.label == "N7"] = "Poaceae (Grasses)"
+tree$node.label[tree$node.label == "N11"] = "Panicoideae"
+tree$node.label[tree$node.label == "N13"] = "Andropogoneae"
+tree$node.label[tree$node.label == "N16"] = "Sorghum"
+tree$node.label[tree$node.label == "N17"] = "Sorghum (subgroup)"
 
-nodes_to_replace_with_na = c("N1","N3","N5","N6","N8","N9","N10","N12","N15","N16")
+nodes_to_replace_with_na = c("N4","N6","N8","N9","N10","N12","N14","N18","N19")
 tree$node.label[tree$node.label %in% nodes_to_replace_with_na] = NA
 
 png(file="tree_3.png", width=9, height=9, units="in", res=500)
@@ -80,16 +83,17 @@ subset_type_result = type_result[c("ID", "p.adjust", "Count")]
 subset_type_result$factor = 'Type'
 row.names(subset_type_result) = NULL
 
-df = rbind(subset_trt_result,subset_type_result)
+int_result = read.table("int_enricher_df.txt", header=TRUE, stringsAsFactors = FALSE, sep="\t")
+subset_int_result = int_result[c("ID", "p.adjust", "Count")]
+subset_int_result$factor = 'Interaction'
+row.names(subset_int_result) = NULL
+
+df = rbind(subset_trt_result,subset_type_result,subset_int_result)
 
 for (i in unique_nodes){
   if(!(i %in% df$ID)){
-    df = rbind(df, c(ID = i, p.adjust=NA, Count=NA, factor='Treatment,Type'))
+    df = rbind(df, c(ID = i, p.adjust=NA, Count=NA, factor='Treatment,Type,Interaction'))
   }
-}
-
-for (i in df$ID %>% unique()){
-  df = rbind(df, c(ID = i, p.adjust=NA, Count=NA, factor='Interaction'))
 }
 
 df = separate_rows(df, factor, sep=',')
@@ -100,13 +104,17 @@ df$p.adjust = as.numeric(df$p.adjust)
 df = df %>% rename(node = ID)
 df = df %>% rename(GeneCount = Count)
 
-df$node[df$node == "N0"] = "Angiosperms"
-df$node[df$node == "N2"] = "Monocots"
-df$node[df$node == "N4"] = "Poaceae (Grasses)"
-df$node[df$node == "N7"] = "Panicoideae"
-df$node[df$node == "N11"] = "Andropogoneae"
-df$node[df$node == "N13"] = "Sorghum"
-df$node[df$node == "N14"] = "Sorghum (subgroup)"
+df$node[df$node == "N0"] = "Plantae"
+df$node[df$node == "N1"] = "Angiosperms"
+df$node[df$node == "N2"] = "Eudicots"
+df$node[df$node == "N3"] = "Monocots"
+df$node[df$node == "N5"] = "Poales"
+df$node[df$node == "N7"] = "Poaceae (Grasses)"
+df$node[df$node == "N11"] = "Panicoideae"
+df$node[df$node == "N13"] = "Andropogoneae"
+df$node[df$node == "N15"] = "N15"
+df$node[df$node == "N16"] = "Sorghum"
+df$node[df$node == "N17"] = "Sorghum (subgroup)"
 df$node[df$node == "sorghumRio"] = "SorghumRio"
 df$node[df$node == "SingleCopyOrthologues"] = "Single Copy Orthologues"
 df$node[df$node == "UnassignedGenes"] = "No Orthorgroup"
@@ -116,7 +124,7 @@ df$node[df$node == "UnassignedGenes"] = "No Orthorgroup"
 # =============================================================================
 
 df$factor = factor(df$factor, levels = c("Treatment", "Type", "Interaction"))
-df$node = factor(df$node, levels = rev(c("Angiosperms", "Monocots", "Poaceae (Grasses)", "Panicoideae", "Andropogoneae", "Sorghum", "Sorghum (subgroup)", "SorghumRio", "Single Copy Orthologues", "No Orthorgroup")))
+df$node = factor(df$node, levels = rev(c("Plantae", "Angiosperms", "Eudicots", "Monocots", "Poales", "Poaceae (Grasses)", "Panicoideae", "Andropogoneae", "N15", "Sorghum", "Sorghum (subgroup)", "SorghumRio", "Single Copy Orthologues", "No Orthorgroup")))
 
 png(file="enrichment_dotplot.png", width=9, height=8, units="in", res=500)
 enrichment_dotplot=ggplot(df, aes(x=factor, y=node, color=p.adjust, size=GeneCount)) +
@@ -145,3 +153,36 @@ ggpubr::ggarrange(tree_3, enrichment_dotplot,
 
 dev.off()
 
+# =============================================================================
+# Tree for Adobe Indesign
+# =============================================================================
+
+png(file="tree_4.png", width=11.5, height=11.5, units="in", res=500)
+tree_4 = ggtree(tree, branch.length = "none") + 
+  geom_tiplab(fontface='bold', size=4) +
+  geom_nodelab(geom='label', size=4, angle=90, fontface='bold') + hexpand(.07)
+
+tree_4
+dev.off()
+
+# =============================================================================
+# Calculate diameter of enrichment circles for Adobe Indesign plot
+# =============================================================================
+
+get_circle_diameter = function(value){
+  new_value = -log10(value)
+  lower_bound = -log10(0.05)
+  upper_bound = -log10(1*10^-10)
+  
+  value_percentile = 100 * ((new_value - lower_bound)/(upper_bound - lower_bound))
+  
+  adobe_scale_lower_bound = 0.07
+  adobe_scale_upper_bound = 0.25
+  
+  diameter_of_circle = adobe_scale_lower_bound + 
+    ((value_percentile/100) * (adobe_scale_upper_bound - adobe_scale_lower_bound))
+  return(round(diameter_of_circle,3))
+}
+
+df_new = na.omit(df)
+df_new$adobe_circle_diameter <- get_circle_diameter(df_new$p.adjust)

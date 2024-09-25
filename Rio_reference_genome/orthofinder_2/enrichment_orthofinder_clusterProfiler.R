@@ -6,6 +6,7 @@ library(enrichplot)
 library(tidyr)
 library(ggupset)
 library(ggplot2)
+library(dplyr)
 
 setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/Rio_reference_genome/")
 
@@ -13,9 +14,13 @@ setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result
 # read in the annotation file and subset it
 # =============================================================================
 
-annot = read.csv("orthofinder_2/annot_node_ckpt5.csv")
+annot = read.csv("orthofinder_2/annot_node_ckpt6.csv")
 
-subset_annot = annot[c("locusName", "Species.Tree.Node")]
+subset_annot = annot[c("locusName", "Species.Tree.Node_2")]
+subset_annot = subset_annot %>% rename(Species.Tree.Node = Species.Tree.Node_2)
+
+# stats of annotation
+table(subset_annot$Species.Tree.Node)
 
 # =============================================================================
 # import glmmseq result and prepare it
@@ -118,6 +123,9 @@ subset_annot = subset_annot[, c("Species.Tree.Node", "locusName")]
 
 # making sure all NA annotations (from hybrid genes) reads as NA and not as another annotation category called "NA" 
 subset_annot$Species.Tree.Node[subset_annot$Species.Tree.Node == "NA"] = NA
+
+# stats of annotation
+table(subset_annot$Species.Tree.Node)
 
 # =============================================================================
 # over representation analysis using hypergeometric test. maxGSSize was set as 11,000 

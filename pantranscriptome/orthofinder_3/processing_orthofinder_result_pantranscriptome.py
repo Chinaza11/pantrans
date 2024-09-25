@@ -15,7 +15,7 @@ os.chdir("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_res
 
 annot = pd.read_csv("GO_analysis/pantranscriptome_plus_GO_cleaned.csv")
 
-duplications = pd.read_csv("orthofinder_2/Duplications.tsv", sep='\t')
+duplications = pd.read_csv("orthofinder_3/Duplications.tsv", sep='\t')
 
 def duplication_info(gene_column_duplication_file, STN_column_annot_file, orthogrp_column_annot_file):
     for index, gene in annot['sequence_name'].items():
@@ -34,13 +34,13 @@ duplication_info('Genes 2', 'Genes2 Species Tree Node', 'Genes2 Orthogroup')
     
 annot = annot[['stable_id','sequence_name','pangene','Genes1 Species Tree Node','Genes2 Species Tree Node','Genes1 Orthogroup','Genes2 Orthogroup']]
 
-# annot.to_csv('orthofinder_2/intermediate_files/annot_node_ckpt1.csv', index=False)
+# annot.to_csv('orthofinder_3/intermediate_files/annot_node_ckpt1.csv', index=False)
 
 # =============================================================================
 # annotate all genes with their orthogroups gotten from Orthogroups.tsv file
 # =============================================================================
 
-orthogroups = pd.read_csv("orthofinder_2/Orthogroups.tsv", sep='\t')
+orthogroups = pd.read_csv("orthofinder_3/Orthogroups.tsv", sep='\t')
 
 def add_orthogroup_info(gene, index, column_name):
     matching_rows = orthogroups[orthogroups[column_name].str.contains(gene, case=False, na=False, regex=False)]
@@ -66,14 +66,14 @@ for index, gene in annot['sequence_name'].items():
             add_orthogroup_info(gene, index, column_name)
             break
 
-# annot.to_csv('orthofinder_2/intermediate_files/annot_node_ckpt2.csv', index=False)
+# annot.to_csv('orthofinder_3/intermediate_files/annot_node_ckpt2.csv', index=False)
 
 # =============================================================================
 # annotate genes that are SingleCopyOrthologues
 # =============================================================================
 
 header = ["group_name"]
-Orthogroups_SingleCopyOrthologues = pd.read_table("orthofinder_2/Orthogroups_SingleCopyOrthologues.txt", names=header)
+Orthogroups_SingleCopyOrthologues = pd.read_table("orthofinder_3/Orthogroups_SingleCopyOrthologues.txt", names=header)
 
 for index, orthogroup in annot['orthogroup_from_orthogroups.tsv'].items():
     if pd.isna(orthogroup) != True:
@@ -81,13 +81,13 @@ for index, orthogroup in annot['orthogroup_from_orthogroups.tsv'].items():
             if orthogroup == orthogroup2:
                 annot.at[index, "SingleCopyOrthologues"] = "SingleCopyOrthologues"
 
-# annot.to_csv('orthofinder_2/intermediate_files/annot_node_ckpt3.csv', index=False)
+# annot.to_csv('orthofinder_3/intermediate_files/annot_node_ckpt3.csv', index=False)
 
 # =============================================================================
 # annotate genes that are unassigned to any orthogroup
 # =============================================================================
 
-Orthogroups_UnassignedGenes = pd.read_csv("orthofinder_2/Orthogroups_UnassignedGenes.tsv", sep='\t', low_memory=False)
+Orthogroups_UnassignedGenes = pd.read_csv("orthofinder_3/Orthogroups_UnassignedGenes.tsv", sep='\t', low_memory=False)
 
 def unassigned_genes(gene, index, column_name):
     for index2, gene2 in Orthogroups_UnassignedGenes[column_name].items():
@@ -113,13 +113,13 @@ for index, gene in annot['sequence_name'].items():
             unassigned_genes(gene, index, column_name)
             break
 
-# annot.to_csv('orthofinder_2/intermediate_files/annot_node_ckpt4.csv', index=False)
+# annot.to_csv('orthofinder_3/intermediate_files/annot_node_ckpt4.csv', index=False)
 
 # =============================================================================
 # descriptive statistics
 # =============================================================================
 
-annot = pd.read_csv("orthofinder_2/intermediate_files/annot_node_ckpt4.csv")
+annot = pd.read_csv("orthofinder_3/intermediate_files/annot_node_ckpt4.csv")
 
 pd.notna(annot['Genes1 Species Tree Node']).sum()
 pd.notna(annot['Genes2 Species Tree Node']).sum()
@@ -127,11 +127,11 @@ pd.notna(annot['SingleCopyOrthologues']).sum()
 pd.notna(annot['orthogroup_from_orthogroups.tsv']).sum()
 pd.notna(annot['UnassignedGenes']).sum()
 
-# 22,698 rows were annotated from Genes1 column of the Duplications.tsv file
-# 23,789 rows were annotated from Genes2 column of the Duplications.tsv file
-# 265 genes were SingleCopyOrthologues
-# 2354 genes were UnassignedGenes
-# 59690 rows from orthogroup_from_orthogroups.tsv column + 2354 rows from UnassignedGenes column = 62044
+# 25314 rows were annotated from Genes1 column of the Duplications.tsv file
+# 27307 rows were annotated from Genes2 column of the Duplications.tsv file
+# 4 genes were SingleCopyOrthologues
+# 2265 genes were UnassignedGenes
+# 59779 rows from orthogroup_from_orthogroups.tsv column + 2265 rows from UnassignedGenes column = 62044
 
 # =============================================================================
 # join Genes1 Species Tree Node, Genes2 Species Tree Node, SingleCopyOrthologues
@@ -154,36 +154,36 @@ for index, cell in annot['Species.Tree.Node'].items():
         
 (annot['Species.Tree.Node'] == 'NA').sum()
 
-# 33744 genes annotated (leaving 28300 not yet annotated)
+# 35992 genes annotated (leaving 26052 not yet annotated)
 
 # =============================================================================
-# changing all nodes in CP-NAM to N15
+# changing all nodes in CP-NAM to N17
 # =============================================================================
 
 replacement_dict = {
-    'N17': 'N15',
-    'N19': 'N15',
-    'N21': 'N15',
-    'N22': 'N15',
-    'N23': 'N15',
-    'N24': 'N15',
-    'N25': 'N15',
-    'N26': 'N15',
-    'sorghumChineseamber': 'N15',
-    'sorghumGrassl': 'N15',
-    'sorghumLeoti': 'N15',
-    'sorghumPI229841': 'N15',
-    'sorghumPI297155': 'N15',
-    'sorghumPI329311': 'N15',
-    'sorghumPI510757': 'N15',
-    'sorghumPI506069': 'N15',
-    'sorghumPI655972': 'N15',
-    'sorghumRioNAM': 'N15'}
+    'N19': 'N17',
+    'N21': 'N17',
+    'N23': 'N17',
+    'N24': 'N17',
+    'N26': 'N17',
+    'N27': 'N17',
+    'N28': 'N17',
+    'N29': 'N17',
+    'sorghumChineseamber': 'N17',
+    'sorghumGrassl': 'N17',
+    'sorghumLeoti': 'N17',
+    'sorghumPI229841': 'N17',
+    'sorghumPI297155': 'N17',
+    'sorghumPI329311': 'N17',
+    'sorghumPI510757': 'N17',
+    'sorghumPI506069': 'N17',
+    'sorghumPI655972': 'N17',
+    'sorghumRioNAM': 'N17'}
 
 for key, value in replacement_dict.items():
     annot['Species.Tree.Node'] = annot['Species.Tree.Node'].str.replace(key,value)
     
 annot.rename(columns={'sequence_name': 'locusName'}, inplace=True)
     
-# annot.to_csv('orthofinder_2/annot_node_ckpt5.csv', index=False)
+annot.to_csv('orthofinder_3/annot_node_ckpt5.csv', index=False)
 

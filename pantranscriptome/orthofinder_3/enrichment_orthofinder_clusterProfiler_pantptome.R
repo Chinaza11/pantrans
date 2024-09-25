@@ -13,7 +13,7 @@ setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result
 # read in the annotation file and subset it
 # =============================================================================
 
-annot = read.csv("orthofinder_2/annot_node_ckpt6.csv")
+annot = read.csv("orthofinder_3/annot_node_ckpt6.csv")
 
 subset_annot = annot[c("locusName", "Species.Tree.Node_2")]
 subset_annot = subset_annot %>% rename(Species.Tree.Node = Species.Tree.Node_2)
@@ -136,10 +136,10 @@ table(subset_annot$Species.Tree.Node)
 
 treat_enricher = enricher(treat_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
 treat_enricher_df = data.frame(treat_enricher)
-write.table(treat_enricher_df, "orthofinder_2/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+write.table(treat_enricher_df, "orthofinder_3/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
 barplot(treat_enricher, showCategory=20) 
 
-png(file="orthofinder_2/treat_enricher.png", width=9, height=8, units="in", res=500)
+png(file="orthofinder_3/treat_enricher.png", width=9, height=8, units="in", res=500)
 dotplot(treat_enricher, showCategory=30) + 
   ggtitle("Treatment") + 
   theme(
@@ -155,10 +155,10 @@ dev.off()
 #------------------------------------------------------------------------------
 type_enricher = enricher(type_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
 type_enricher_df = data.frame(type_enricher)
-write.table(type_enricher_df, "orthofinder_2/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+write.table(type_enricher_df, "orthofinder_3/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
 barplot(type_enricher, showCategory=20) 
 
-png(file="orthofinder_2/type_enricher.png", width=9, height=8, units="in", res=500)
+png(file="orthofinder_3/type_enricher.png", width=9, height=8, units="in", res=500)
 dotplot(type_enricher, showCategory=30) + 
   ggtitle("Type") + 
   theme(
@@ -174,22 +174,18 @@ dev.off()
 #------------------------------------------------------------------------------
 int_enricher = enricher(int_genes, minGSSize=1, maxGSSize=20000, universe=gene_universe, TERM2GENE=subset_annot)
 int_enricher_df = data.frame(int_enricher)
+write.table(int_enricher_df, "orthofinder_3/int_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+barplot(int_enricher, showCategory=20)
 
-# no result so code below was commented out
-
-# write.table(int_enricher_df, "orthofinder_2/int_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-# barplot(int_enricher, showCategory=20) 
-# 
-# png(file="orthofinder_2/int_enricher.png", width=9, height=8, units="in", res=500)
-# dotplot(int_enricher, showCategory=30) + 
-#   ggtitle("Interaction") + 
-#   theme(
-#     plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
-#     axis.title.x = element_text(size = 14, face ="bold"), 
-#     axis.text.x = element_text(size = 12),
-#     axis.text.y = element_text(size = 18, face ="bold"),
-#     legend.text = element_text(size = 12),
-#     legend.title = element_text(size = 14)
-#   )
-# dev.off()
-
+png(file="orthofinder_3/int_enricher.png", width=9, height=8, units="in", res=500)
+dotplot(int_enricher, showCategory=30) +
+  ggtitle("Interaction") +
+  theme(
+    plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
+    axis.title.x = element_text(size = 14, face ="bold"),
+    axis.text.x = element_text(size = 12),
+    axis.text.y = element_text(size = 18, face ="bold"),
+    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 14)
+  )
+dev.off()
