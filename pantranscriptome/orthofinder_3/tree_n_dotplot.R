@@ -163,7 +163,7 @@ dev.off()
 
 png(file="tree_4.png", width=11.5, height=11.5, units="in", res=500)
 tree_4 = ggtree(tree, branch.length = "none") + 
-  geom_tiplab(fontface='bold', size=4) +
+  geom_tiplab(fontface='bold', size=3.75) +
   geom_nodelab(geom='label', size=4, angle=90, fontface='bold') + hexpand(.07)
 
 tree_4
