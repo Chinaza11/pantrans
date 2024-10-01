@@ -190,4 +190,4 @@ get_circle_diameter = function(value){
 }
 
 df_new = na.omit(df)
-df_new$adobe_circle_diameter <- get_circle_diameter(df_new$p.adjust)
+df_new$adobe_circle_diameter = get_circle_diameter(df_new$p.adjust)

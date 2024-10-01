@@ -9,30 +9,11 @@ library(ggtree)
 setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/Rio_reference_genome/orthofinder_3")
 
 # =============================================================================
-# Tree with node labels
+# Tree with customized node labels
 # =============================================================================
 
 tree = read.tree("SpeciesTree_rooted_node_labels.txt")
 tree
-
-png(file="tree.png", width=9, height=8, units="in", res=500)
-ggtree(tree, branch.length = "none") + 
-  geom_tiplab() +
-  geom_nodelab(geom='label') + hexpand(.05)
-dev.off()
-
-# =============================================================================
-# Tree with no node labels
-# =============================================================================
-
-png(file="tree_2.png", width=9, height=8, units="in", res=500)
-ggtree(tree, branch.length = "none") + 
-  geom_tiplab() + hexpand(.05)
-dev.off()
-
-# =============================================================================
-# Tree with customized node labels
-# =============================================================================
 
 tree$node.label[tree$node.label == "N0"] = "Plantae"
 tree$node.label[tree$node.label == "N1"] = "Angiosperms"
@@ -48,13 +29,11 @@ tree$node.label[tree$node.label == "N17"] = "Sorghum (subgroup)"
 nodes_to_replace_with_na = c("N4","N6","N8","N9","N10","N12","N14","N18","N19")
 tree$node.label[tree$node.label %in% nodes_to_replace_with_na] = NA
 
-png(file="tree_3.png", width=9, height=9, units="in", res=500)
 tree_3 = ggtree(tree, branch.length = "none") + 
   geom_tiplab() +
   geom_nodelab(geom='label', size=3.4) + hexpand(.07) + xlim(-0.2, NA)
 
 tree_3
-dev.off()
 
 # =============================================================================
 # Importing the annotation file and getting all the unique nodes
@@ -70,7 +49,7 @@ unique_nodes = sort(unique_nodes)
 unique_nodes = unique_nodes[!is.na(unique_nodes)]
 
 # =============================================================================
-# Importing the enrichment result and combining them into one dataframe
+# importing the enrichment result and combining them into one dataframe
 # =============================================================================
 
 trt_result = read.table("treat_enricher_df.txt", header=TRUE, stringsAsFactors = FALSE, sep="\t")
@@ -78,22 +57,21 @@ subset_trt_result = trt_result[c("ID", "p.adjust", "Count")]
 subset_trt_result$factor = 'Treatment'
 row.names(subset_trt_result) = NULL
 
-type_result = read.table("type_enricher_df.txt", header=TRUE, stringsAsFactors = FALSE, sep="\t")
+type_result = read.table("permutation/type_enricher_df.txt", header=TRUE, stringsAsFactors = FALSE, sep="\t")
 subset_type_result = type_result[c("ID", "p.adjust", "Count")]
 subset_type_result$factor = 'Type'
 row.names(subset_type_result) = NULL
 
-int_result = read.table("int_enricher_df.txt", header=TRUE, stringsAsFactors = FALSE, sep="\t")
-subset_int_result = int_result[c("ID", "p.adjust", "Count")]
-subset_int_result$factor = 'Interaction'
-row.names(subset_int_result) = NULL
-
-df = rbind(subset_trt_result,subset_type_result,subset_int_result)
+df = rbind(subset_trt_result,subset_type_result)
 
 for (i in unique_nodes){
   if(!(i %in% df$ID)){
-    df = rbind(df, c(ID = i, p.adjust=NA, Count=NA, factor='Treatment,Type,Interaction'))
+    df = rbind(df, c(ID = i, p.adjust=NA, Count=NA, factor='Treatment,Type'))
   }
+}
+
+for (i in df$ID %>% unique()){
+  df = rbind(df, c(ID = i, p.adjust=NA, Count=NA, factor='Interaction'))
 }
 
 df = separate_rows(df, factor, sep=',')
@@ -126,7 +104,7 @@ df$node[df$node == "UnassignedGenes"] = "No Orthorgroup"
 df$factor = factor(df$factor, levels = c("Treatment", "Type", "Interaction"))
 df$node = factor(df$node, levels = rev(c("Plantae", "Angiosperms", "Eudicots", "Monocots", "Poales", "Poaceae (Grasses)", "Panicoideae", "Andropogoneae", "N15", "Sorghum", "Sorghum (subgroup)", "SorghumRio", "Single Copy Orthologues", "No Orthorgroup")))
 
-png(file="enrichment_dotplot.png", width=9, height=8, units="in", res=500)
+png(file="permutation/enrichment_dotplot.png", width=9, height=8, units="in", res=500)
 enrichment_dotplot=ggplot(df, aes(x=factor, y=node, color=p.adjust, size=GeneCount)) +
                     geom_point() +
                     xlab('') +
@@ -142,10 +120,10 @@ enrichment_dotplot
 dev.off()
 
 # =============================================================================
-# Combining tree and enrichment result in one layout
+# combining tree and enrichment result in one layout
 # =============================================================================
 
-png(file="tree_n_dotplot.png", width=12, height=12, units="in", res=300)
+png(file="permutation/tree_n_dotplot.png", width=12, height=12, units="in", res=300)
 
 ggpubr::ggarrange(tree_3, enrichment_dotplot, 
                   nrow=2,
@@ -153,17 +131,6 @@ ggpubr::ggarrange(tree_3, enrichment_dotplot,
 
 dev.off()
 
-# =============================================================================
-# Tree for Adobe Indesign
-# =============================================================================
-
-png(file="tree_4.png", width=11.5, height=11.5, units="in", res=500)
-tree_4 = ggtree(tree, branch.length = "none") + 
-  geom_tiplab(fontface='bold', size=4) +
-  geom_nodelab(geom='label', size=4, angle=90, fontface='bold') + hexpand(.07)
-
-tree_4
-dev.off()
 
 # =============================================================================
 # Calculate diameter of enrichment circles for Adobe Indesign plot

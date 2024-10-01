@@ -6,7 +6,7 @@ library(tidyr)
 library(dplyr)
 library(ggtree)
 
-setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/pantranscriptome/orthofinder_2")
+setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/pantranscriptome/orthofinder_3")
 
 # =============================================================================
 # Tree with customized node label
@@ -15,15 +15,21 @@ setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result
 tree = read.tree("SpeciesTree_rooted_node_labels.txt")
 tree
 
-tree$node.label[tree$node.label == "N0"] = "Angiosperms"
-tree$node.label[tree$node.label == "N2"] = "Monocots"
-tree$node.label[tree$node.label == "N4"] = "Poaceae (Grasses)"
-tree$node.label[tree$node.label == "N7"] = "Panicoideae"
-tree$node.label[tree$node.label == "N11"] = "Andropogoneae"
-tree$node.label[tree$node.label == "N13"] = "Sorghum"
-tree$node.label[tree$node.label == "N15"] = "CP-NAM Pop. Parents"
+tree$node.label[tree$node.label == "N0"] = "Plantae"
+tree$node.label[tree$node.label == "N1"] = "Angiosperms"
+tree$node.label[tree$node.label == "N2"] = "Eudicots"
+tree$node.label[tree$node.label == "N4"] = "Monocots"
+tree$node.label[tree$node.label == "N6"] = "Poales"
+tree$node.label[tree$node.label == "N9"] = "Poaceae (Grasses)"
+tree$node.label[tree$node.label == "N12"] = "Panicoideae"
+tree$node.label[tree$node.label == "N14"] = "Andropogoneae"
+tree$node.label[tree$node.label == "N16"] = "Sorghum"
+tree$node.label[tree$node.label == "N17"] = "CP-NAM Pop. Parents"
 
-nodes_to_replace_with_na = c("N1","N3","N5","N6","N8","N9","N10","N12","N14","N16","N17","N18","N19","N20","N21","N22","N23","N24","N25","N26")
+nodes_to_replace_with_na = c("N3","N5","N7","N8","N10","N11","N13","N18","N19",
+                             "N20","N21","N22","N23","N24","N25","N26","N27",
+                             "N28","N29")
+
 tree$node.label[tree$node.label %in% nodes_to_replace_with_na] = NA
 
 tree_3 = ggtree(tree, branch.length = "none") + 
@@ -77,13 +83,16 @@ df$p.adjust = as.numeric(df$p.adjust)
 df = df %>% rename(node = ID)
 df = df %>% rename(GeneCount = Count)
 
-df$node[df$node == "N0"] = "Angiosperms"
-df$node[df$node == "N2"] = "Monocots"
-df$node[df$node == "N4"] = "Poaceae (Grasses)"
-df$node[df$node == "N7"] = "Panicoideae"
-df$node[df$node == "N11"] = "Andropogoneae"
-df$node[df$node == "N13"] = "Sorghum"
-df$node[df$node == "N15"] = "CP-NAM Pop. Parents"
+df$node[df$node == "N0"] = "Plantae"
+df$node[df$node == "N1"] = "Angiosperms"
+df$node[df$node == "N2"] = "Eudicots"
+df$node[df$node == "N4"] = "Monocots"
+df$node[df$node == "N6"] = "Poales"
+df$node[df$node == "N9"] = "Poaceae (Grasses)"
+df$node[df$node == "N12"] = "Panicoideae"
+df$node[df$node == "N14"] = "Andropogoneae"
+df$node[df$node == "N16"] = "Sorghum"
+df$node[df$node == "N17"] = "CP-NAM Pop. Parents"
 df$node[df$node == "SingleCopyOrthologues"] = "Single Copy Orthologues"
 df$node[df$node == "UnassignedGenes"] = "No Orthorgroup"
 
@@ -92,7 +101,11 @@ df$node[df$node == "UnassignedGenes"] = "No Orthorgroup"
 # =============================================================================
 
 df$factor = factor(df$factor, levels = c("Treatment", "Type", "Interaction"))
-df$node = factor(df$node, levels = rev(c("Angiosperms", "Monocots", "Poaceae (Grasses)", "Panicoideae", "Andropogoneae", "Sorghum", "CP-NAM Pop. Parents", "Single Copy Orthologues", "No Orthorgroup")))
+df$node = factor(df$node, levels = rev(c("Plantae", "Angiosperms", "Eudicots", 
+                                         "Monocots", "Poales", "Poaceae (Grasses)",
+                                         "Panicoideae", "Andropogoneae", "N15",
+                                         "Sorghum", "CP-NAM Pop. Parents", 
+                                         "Single Copy Orthologues", "No Orthorgroup")))
 
 png(file="permutation/enrichment_dotplot.png", width=9, height=8, units="in", res=500)
 enrichment_dotplot=ggplot(df, aes(x=factor, y=node, color=p.adjust, size=GeneCount)) + 
@@ -121,3 +134,25 @@ ggpubr::ggarrange(tree_3, enrichment_dotplot,
                   labels = "AUTO")
 
 dev.off()
+
+# =============================================================================
+# Calculate diameter of enrichment circles for Adobe Indesign plot
+# =============================================================================
+
+get_circle_diameter = function(value){
+  new_value = -log10(value)
+  lower_bound = -log10(0.05)
+  upper_bound = -log10(1*10^-10)
+  
+  value_percentile = 100 * ((new_value - lower_bound)/(upper_bound - lower_bound))
+  
+  adobe_scale_lower_bound = 0.07
+  adobe_scale_upper_bound = 0.25
+  
+  diameter_of_circle = adobe_scale_lower_bound + 
+    ((value_percentile/100) * (adobe_scale_upper_bound - adobe_scale_lower_bound))
+  return(round(diameter_of_circle,3))
+}
+
+df_new = na.omit(df)
+df_new$adobe_circle_diameter = get_circle_diameter(df_new$p.adjust)
