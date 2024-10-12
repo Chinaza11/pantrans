@@ -132,105 +132,51 @@ annot_unassigned_hybrid_rio_genes(rio_int,"int_genes")
 # annotating DEGs gotten using pantranscriptome
 # =============================================================================
 
+group_map = {
+    "SbiCamber": "sorghumChineseamber",
+    "SbiGrassl": "sorghumGrassl",
+    "SbiLeoti": "sorghumLeoti",
+    "SbiPI229841": "sorghumPI229841",
+    "SbiPI297155": "sorghumPI297155",
+    "SbiPI329311": "sorghumPI329311",
+    "SbiPI506069": "sorghumPI506069",
+    "SbiPI510757": "sorghumPI510757",
+    "SbiPI655972": "sorghumPI655972",
+    "SbiPI563295": "sorghumRioNAM"
+}
+
 # -----------------------------------------------------------------------------
 # annotating from orthogroups file (Orthogroups.tsv)
 def annot_assigned_pan_genes(df, column):
+    
+    # Helper function to find orthogroups for a gene based on its prefix
+    def find_orthogroup(value, group_key):
+        orthogroup_list = []
+        for index2, gene2 in Orthogroups[group_key].items():
+            if value in str(gene2):
+                orthogroup_list.append(Orthogroups.at[index2, "Orthogroup"])
+        return orthogroup_list
+
     for index, gene in df[column].items():
-                
-        if gene.find("--") != -1:
+        orthogroup_list = []
+
+        if "--" in gene:
+            # Split gene string if it contains multiple genes separated by '--'
             genes = gene.split("--")
-            orthogroup_list = []
             for value in genes:
-                if value.startswith("SbiCamber"):
-                    for index2, gene2 in Orthogroups['sorghumChineseamber'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiGrassl"):
-                    for index2, gene2 in Orthogroups['sorghumGrassl'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiLeoti"):
-                    for index2, gene2 in Orthogroups['sorghumLeoti'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI229841"):
-                    for index2, gene2 in Orthogroups['sorghumPI229841'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])                      
-                elif value.startswith("SbiPI297155"):
-                    for index2, gene2 in Orthogroups['sorghumPI297155'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI329311"):
-                    for index2, gene2 in Orthogroups['sorghumPI329311'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI506069"):
-                    for index2, gene2 in Orthogroups['sorghumPI506069'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI510757"):
-                    for index2, gene2 in Orthogroups['sorghumPI510757'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])                       
-                elif value.startswith("SbiPI655972"):
-                    for index2, gene2 in Orthogroups['sorghumPI655972'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI563295"):
-                    for index2, gene2 in Orthogroups['sorghumRioNAM'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups.at[index2,"Orthogroup"])
-            
-            if len(orthogroup_list) > 0:
-                deduplicate_orthogroup_list = []
-                for val in orthogroup_list:
-                    if val not in deduplicate_orthogroup_list:
-                        deduplicate_orthogroup_list.append(val)
-                        
-                df.at[index,"orthogroup"] = ", ".join(deduplicate_orthogroup_list)
-            
+                for prefix, group_key in group_map.items():
+                    if value.startswith(prefix):
+                        orthogroup_list.extend(find_orthogroup(value, group_key))
         else:
-            if gene.startswith("SbiCamber"):
-                for index2, gene2 in Orthogroups['sorghumChineseamber'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiGrassl"):
-                for index2, gene2 in Orthogroups['sorghumGrassl'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiLeoti"):
-                for index2, gene2 in Orthogroups['sorghumLeoti'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI229841"):
-                for index2, gene2 in Orthogroups['sorghumPI229841'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]                        
-            elif gene.startswith("SbiPI297155"):
-                for index2, gene2 in Orthogroups['sorghumPI297155'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI329311"):
-                for index2, gene2 in Orthogroups['sorghumPI329311'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI506069"):
-                for index2, gene2 in Orthogroups['sorghumPI506069'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI510757"):
-                for index2, gene2 in Orthogroups['sorghumPI510757'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]                         
-            elif gene.startswith("SbiPI655972"):
-                for index2, gene2 in Orthogroups['sorghumPI655972'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI563295"):
-                for index2, gene2 in Orthogroups['sorghumRioNAM'].items():
-                    if gene in str(gene2):
-                        df.at[index,"orthogroup"] = Orthogroups.at[index2,"Orthogroup"]                          
+            # Single gene case
+            for prefix, group_key in group_map.items():
+                if gene.startswith(prefix):
+                    orthogroup_list = find_orthogroup(gene, group_key)
+                    break
+
+        # Deduplicate and assign orthogroups to the dataframe
+        if orthogroup_list:
+            df.at[index, "orthogroup"] = ", ".join(sorted(set(orthogroup_list)))
 
 annot_assigned_pan_genes(pan_type,"type_genes")
 annot_assigned_pan_genes(pan_treat,"treat_genes")
@@ -239,60 +185,21 @@ annot_assigned_pan_genes(pan_int,"int_genes")
 # -----------------------------------------------------------------------------
 # annotating single genes unassigned to no orthogroups using this file (Orthogroups_UnassignedGenes.tsv)
 def annot_unassigned_single_pan_genes(df, column):
+    
+    # Helper function to find and assign orthogroup for unassigned genes
+    def assign_orthogroup(gene, group_key, index):
+        for index2, gene2 in Orthogroups_UnassignedGenes[group_key].items():
+            if pd.notna(gene2) and gene in str(gene2):
+                df.at[index, "orthogroup"] = Orthogroups_UnassignedGenes.at[index2, "Orthogroup"]
+                break
+
     for index, group in df["orthogroup"].items():
-        if len(group) == 0 :
+        if not group:
             gene = df.at[index, column]
-            
-            if gene.startswith("SbiCamber"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumChineseamber'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiGrassl"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumGrassl'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]            
-            elif gene.startswith("SbiLeoti"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumLeoti'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI229841"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI229841'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]  
-            elif gene.startswith("SbiPI297155"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI297155'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI329311"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI329311'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]            
-            elif gene.startswith("SbiPI506069"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI506069'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI510757"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI510757'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"] 
-            elif gene.startswith("SbiPI655972"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI655972'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"]
-            elif gene.startswith("SbiPI563295"):
-                for index2, gene2 in Orthogroups_UnassignedGenes['sorghumRioNAM'].items():
-                    if pd.isna(gene2) != True:
-                        if gene in str(gene2):
-                            df.at[index,"orthogroup"] = Orthogroups_UnassignedGenes.at[index2,"Orthogroup"] 
+            for prefix, group_key in group_map.items():
+                if gene.startswith(prefix):
+                    assign_orthogroup(gene, group_key, index)
+                    break
                                             
 annot_unassigned_single_pan_genes(pan_type,"type_genes")
 annot_unassigned_single_pan_genes(pan_treat,"treat_genes")
@@ -302,65 +209,35 @@ annot_unassigned_single_pan_genes(pan_int,"int_genes")
 # -----------------------------------------------------------------------------
 # annotating hybrid genes unassigned to no orthogroups using this file (Orthogroups_UnassignedGenes.tsv)
 def annot_unassigned_hybrid_pan_genes(df, column):
-    for index, gene in df[column].items():    
-        if gene.find("--") != -1:
+    # Helper function to find and append orthogroups for each gene
+    def find_orthogroup(value, group_key):
+        orthogroup_list = []
+        for index2, gene2 in Orthogroups_UnassignedGenes[group_key].items():
+            if value in str(gene2):
+                orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2, "Orthogroup"])
+        return orthogroup_list
+
+    for index, gene in df[column].items():
+        if "--" in gene:
             genes = gene.split("--")
             orthogroup_list = []
-            for value in genes:
-                if value.startswith("SbiCamber"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumChineseamber'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiGrassl"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumGrassl'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiLeoti"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumLeoti'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI229841"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI229841'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])                      
-                elif value.startswith("SbiPI297155"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI297155'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI329311"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI329311'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI506069"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI506069'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI510757"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI510757'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])                       
-                elif value.startswith("SbiPI655972"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumPI655972'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-                elif value.startswith("SbiPI563295"):
-                    for index2, gene2 in Orthogroups_UnassignedGenes['sorghumRioNAM'].items():
-                        if value in str(gene2):
-                            orthogroup_list.append(Orthogroups_UnassignedGenes.at[index2,"Orthogroup"])
-            if len(orthogroup_list) > 0:
-                deduplicate_orthogroup_list = []
-                for val in orthogroup_list:
-                    if val not in deduplicate_orthogroup_list:
-                        deduplicate_orthogroup_list.append(val)
-                    
-                deduplicate_orthogroup_str = ', ' + ", ".join(deduplicate_orthogroup_list)
-                df.at[index,"orthogroup"] += deduplicate_orthogroup_str            
 
-    
+            # Loop through each split gene and assign orthogroups based on prefixes
+            for value in genes:
+                for prefix, group_key in group_map.items():
+                    if value.startswith(prefix):
+                        orthogroup_list.extend(find_orthogroup(value, group_key))
+                        break  # Exit once a matching prefix is found
+
+            # Deduplicate the orthogroup list and update the dataframe
+            if orthogroup_list:
+                deduplicated_orthogroups = list(set(orthogroup_list))  # Removes duplicates
+                deduplicate_orthogroup_str = ', ' + ", ".join(deduplicated_orthogroups)
+                df.at[index, "orthogroup"] += deduplicate_orthogroup_str      
+
 annot_unassigned_hybrid_pan_genes(pan_type,"type_genes")
 annot_unassigned_hybrid_pan_genes(pan_treat,"treat_genes")
 annot_unassigned_hybrid_pan_genes(pan_int,"int_genes")  
-
 
 # =============================================================================
 # comparing DEGs orthogroups from rio-ref-genome and pantranscriptome and plotting it
@@ -394,7 +271,6 @@ def comparison(df1, df1_name, df2, df2_name, name):
 comparison(rio_type, 'Rio-Ref-Genome', pan_type, 'Pan-transcriptome', 'Type')
 comparison(rio_treat, 'Rio-Ref-Genome', pan_treat, 'Pan-transcriptome', 'Treatment')
 comparison(rio_int, 'Rio-Ref-Genome', pan_int, 'Pan-transcriptome', 'Interaction')
-
 
 # =============================================================================
 # Write out dataframes for plotting in R

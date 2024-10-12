@@ -2,6 +2,7 @@ rm(list=ls())
 ls()
 
 library(topGO)
+library(ggplot2)
 
 setwd("G:/My Drive/PhD/project/Iron_RNASeq_sorghum/data_analysis/data_and_result/Rio_reference_genome/")
 
@@ -143,251 +144,64 @@ res.int.mf = res.int.mf[res.int.mf$classicFisher < 0.05,]
 # Plot the results
 # =============================================================================
 
-# Interaction effect result
-res.int.mf$classicFisher <- as.numeric(res.int.mf$classicFisher)
-goEnrichment_int <- res.int.mf[res.int.mf$classicFisher<0.05,]
-goEnrichment_int <- goEnrichment_int[,c("GO.ID","Term","classicFisher")]
-goEnrichment_int$Term <- gsub(" [a-z]*\\.\\.\\.$", "", goEnrichment_int$Term)
-goEnrichment_int$Term <- gsub("\\.\\.\\.$", "", goEnrichment_int$Term)
-goEnrichment_int$Term <- paste(goEnrichment_int$GO.ID, goEnrichment_int$Term, sep=", ")
-goEnrichment_int$Term <- factor(goEnrichment_int$Term, levels=rev(goEnrichment_int$Term))
-
-require(ggplot2)
-
-png(file="GO_analysis/int_fisher_all_terms.png", width=9, height=8, units="in", res=500)
-ggplot(goEnrichment_int, aes(x=Term, y=-log10(classicFisher))) +
-  stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill="steelblue", color="steelblue") +
-  xlab("") +
-  ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
-  ggtitle("Interaction") +
-  scale_y_continuous(limits = c(0, max(-log10(goEnrichment_int$classicFisher))+2)) + 
-  theme_bw(base_size=24) +
-  theme(
-    legend.position='none',
-    legend.background=element_rect(),
-    plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
-    axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
-    axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-    axis.title=element_text(size=12, face="bold"),
-    legend.key=element_blank(),     #removes the border
-    legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-    legend.text=element_text(size=12),  #Text size
-    title=element_text(size=12)) +
-  guides(colour=guide_legend(override.aes=list(size=2.5))) +
-  coord_flip()
-dev.off()
-
-#------------------------------------------------------------------------------
-# Treatment effect result
-res.treat.mf$classicFisher <- as.numeric(res.treat.mf$classicFisher)
-goEnrichment_treat <- res.treat.mf[res.treat.mf$classicFisher<0.05,]
-goEnrichment_treat <- goEnrichment_treat[,c("GO.ID","Term","classicFisher")]
-goEnrichment_treat$Term <- gsub(" [a-z]*\\.\\.\\.$", "", goEnrichment_treat$Term)
-goEnrichment_treat$Term <- gsub("\\.\\.\\.$", "", goEnrichment_treat$Term)
-goEnrichment_treat$Term <- paste(goEnrichment_treat$GO.ID, goEnrichment_treat$Term, sep=", ")
-goEnrichment_treat$Term <- factor(goEnrichment_treat$Term, levels=rev(goEnrichment_treat$Term))
-
-png(file="GO_analysis/treat_fisher_all_terms.png", width=9, height=8, units="in", res=500)
-ggplot(goEnrichment_treat, aes(x=Term, y=-log10(classicFisher))) +
-  stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill="orange", color="orange") +
-  xlab("") +
-  ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
-  ggtitle("Treatment") +
-  scale_y_continuous(limits = c(0, max(-log10(goEnrichment_treat$classicFisher))+2)) + 
-  theme_bw(base_size=24) +
-  theme(
-    legend.position='none',
-    legend.background=element_rect(),
-    plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
-    axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
-    axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-    axis.title=element_text(size=12, face="bold"),
-    legend.key=element_blank(),     #removes the border
-    legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-    legend.text=element_text(size=12),  #Text size
-    title=element_text(size=12)) +
-  guides(colour=guide_legend(override.aes=list(size=2.5))) +
-  coord_flip()
-dev.off()
-
-#------------------------------------------------------------------------------
-# Type effect result
-res.type.mf$classicFisher <- as.numeric(res.type.mf$classicFisher)
-goEnrichment_type <- res.type.mf[res.type.mf$classicFisher<0.05,]
-goEnrichment_type <- goEnrichment_type[,c("GO.ID","Term","classicFisher")]
-goEnrichment_type$Term <- gsub(" [a-z]*\\.\\.\\.$", "", goEnrichment_type$Term)
-goEnrichment_type$Term <- gsub("\\.\\.\\.$", "", goEnrichment_type$Term)
-goEnrichment_type$Term <- paste(goEnrichment_type$GO.ID, goEnrichment_type$Term, sep=", ")
-goEnrichment_type$Term <- factor(goEnrichment_type$Term, levels=rev(goEnrichment_type$Term))
-
-png(file="GO_analysis/type_fisher_all_terms.png", width=9, height=8, units="in", res=500)
-ggplot(goEnrichment_type, aes(x=Term, y=-log10(classicFisher))) +
-  stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill="purple", color="purple") +
-  xlab("") +
-  ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
-  ggtitle("Type") +
-  scale_y_continuous(limits = c(0, max(-log10(goEnrichment_type$classicFisher))+2)) + 
-  theme_bw(base_size=24) +
-  theme(
-    legend.position='none',
-    legend.background=element_rect(),
-    plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
-    axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
-    axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-    axis.title=element_text(size=12, face="bold"),
-    legend.key=element_blank(),     #removes the border
-    legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-    legend.text=element_text(size=12),  #Text size
-    title=element_text(size=12)) +
-  guides(colour=guide_legend(override.aes=list(size=2.5))) +
-  coord_flip()
-dev.off()
-
-# =============================================================================
-# Trying different algorithms and statistical analysis
-# =============================================================================
-
-# Treatment
-ks_classic.treat.mf = runTest(GOdata.treat.MF, algorithm="classic", statistic="ks")
-fisher_weight01.treat.mf = runTest(GOdata.treat.MF, algorithm="weight01", statistic="fisher")
-ks_weight01.treat.mf = runTest(GOdata.treat.MF, algorithm="weight01", statistic="ks")
-
-all_res.treat.mf = GenTable(GOdata.treat.MF, classicFisher=fisher.treat.mf, orderBy="weight01KS", ranksOf="classicFisher", classicKS=ks_classic.treat.mf, weight01KS=ks_weight01.treat.mf, weight01Fisher=fisher_weight01.treat.mf, topNodes=100)
-
-# write.table(all_res.treat.mf, "GO_analysis/all_res.treat.mf.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-
-#------------------------------------------------------------------------------
-# Type
-ks_classic.type.mf = runTest(GOdata.type.MF, algorithm="classic", statistic="ks")
-fisher_weight01.type.mf = runTest(GOdata.type.MF, algorithm="weight01", statistic="fisher")
-ks_weight01.type.mf = runTest(GOdata.type.MF, algorithm="weight01", statistic="ks")
-
-all_res.type.mf = GenTable(GOdata.type.MF, classicFisher=fisher.type.mf, orderBy="weight01KS", ranksOf="classicFisher", classicKS=ks_classic.type.mf, weight01KS=ks_weight01.type.mf, weight01Fisher=fisher_weight01.type.mf, topNodes=100)
-
-# write.table(all_res.type.mf, "GO_analysis/all_res.type.mf.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
+plot_result = function(df, color){
+  df$classicFisher <- as.numeric(df$classicFisher)
+  goEnrichment <- df[df$classicFisher<0.05,]
+  goEnrichment <- goEnrichment[,c("GO.ID","Term","classicFisher")]
+  goEnrichment$Term <- gsub(" [a-z]*\\.\\.\\.$", "", goEnrichment$Term)
+  goEnrichment$Term <- gsub("\\.\\.\\.$", "", goEnrichment$Term)
+  goEnrichment$Term <- paste(goEnrichment$GO.ID, goEnrichment$Term, sep=", ")
+  goEnrichment$Term <- factor(goEnrichment$Term, levels=rev(goEnrichment$Term))
+  print(goEnrichment)
+  
+  plot = ggplot(goEnrichment, aes(x=Term, y=-log10(classicFisher))) +
+          stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill=color, color=color) +
+          xlab("") +
+          ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
+          ggtitle("Interaction") +
+          scale_y_continuous(limits = c(0, max(-log10(goEnrichment$classicFisher))+2)) + 
+          theme_bw(base_size=24) +
+          theme(
+            legend.position='none',
+            legend.background=element_rect(),
+            plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
+            axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
+            axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
+            axis.title=element_text(size=12, face="bold"),
+            legend.key=element_blank(),     #removes the border
+            legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
+            legend.text=element_text(size=12),  #Text size
+            title=element_text(size=12)) +
+          guides(colour=guide_legend(override.aes=list(size=2.5))) +
+          coord_flip()
+  
+  return(plot)
+}
 
 #------------------------------------------------------------------------------
 # Interaction
-ks_classic.int.mf = runTest(GOdata.int.MF, algorithm="classic", statistic="ks")
-fisher_weight01.int.mf = runTest(GOdata.int.MF, algorithm="weight01", statistic="fisher")
-ks_weight01.int.mf = runTest(GOdata.int.MF, algorithm="weight01", statistic="ks")
+int_plot = plot_result(res.int.mf, 'steelblue')
+int_plot
 
-all_res.int.mf = GenTable(GOdata.int.MF, classicFisher=fisher.int.mf, orderBy="weight01KS", ranksOf="classicFisher", classicKS=ks_classic.int.mf, weight01KS=ks_weight01.int.mf, weight01Fisher=fisher_weight01.int.mf, topNodes=100)
-
-# write.table(all_res.int.mf, "GO_analysis/all_res.int.mf.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-
-# =============================================================================
-# sub-setting result and writing it out so you can use REVIGO(http://revigo.irb.hr/) 
-# to eliminate redundant terms. Zea mays was selected under species since it is the 
-# closest relative to sorghum
-# =============================================================================
-
-sub_res.type.mf <- res.type.mf[,c("GO.ID","classicFisher")]
-sub_res.treat.mf <- res.treat.mf[,c("GO.ID","classicFisher")]
-sub_res.int.mf <- res.int.mf[,c("GO.ID","classicFisher")]
-
-# write.table(sub_res.type.mf, "GO_analysis/sub_res.type.mf.txt", quote=FALSE, sep="\t",row.names=FALSE, col.names=TRUE)
-# write.table(sub_res.treat.mf, "GO_analysis/sub_res.treat.mf.txt", quote=FALSE, sep="\t",row.names=FALSE, col.names=TRUE)
-# write.table(sub_res.int.mf, "GO_analysis/sub_res.int.mf.txt", quote=FALSE, sep="\t",row.names=FALSE, col.names=TRUE)
-
-#------------------------------------------------------------------------------
-# Type
-
-revigo_type = read.table("GO_analysis/Revigo_MF_Type_OnScreenTable.tsv", header=TRUE, sep="\t")
-
-merge_type = merge(goEnrichment_type, revigo_type, by.x = "GO.ID", by.y = "TermID")
-
-merge_type = subset(merge_type, Representative == "null") # remove non-representative GO terms
-
-merge_type = merge_type[,c("GO.ID","Term", "classicFisher")]
-
-png(file="GO_analysis/type_fisher_redundant_terms_removed.png", width=9, height=8, units="in", res=500)
-ggplot(merge_type, aes(x=Term, y=-log10(classicFisher))) +
-  stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill="purple", color="purple") +
-  xlab("") +
-  ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
-  ggtitle("Type") +
-  scale_y_continuous(limits = c(0, max(-log10(merge_type$classicFisher))+2)) + 
-  theme_bw(base_size=24) +
-  theme(
-    legend.position='none',
-    legend.background=element_rect(),
-    plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
-    axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
-    axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-    axis.title=element_text(size=12, face="bold"),
-    legend.key=element_blank(),     #removes the border
-    legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-    legend.text=element_text(size=12),  #Text size
-    title=element_text(size=12)) +
-  guides(colour=guide_legend(override.aes=list(size=2.5))) +
-  coord_flip()
+png(file='GO_analysis/int_fisher_all_terms.png', width=9, height=8, units="in", res=500)
+int_plot
 dev.off()
 
 #------------------------------------------------------------------------------
 # Treatment
+treat_plot = plot_result(res.treat.mf, 'orange')
+treat_plot
 
-revigo_treatment = read.table("GO_analysis/Revigo_MF_Treat_OnScreenTable.tsv", header=TRUE, sep="\t")
-
-merge_treatment = merge(goEnrichment_treat, revigo_treatment, by.x = "GO.ID", by.y = "TermID")
-
-merge_treatment = subset(merge_treatment, Representative == "null")
-
-merge_treatment = merge_treatment[,c("GO.ID","Term", "classicFisher")]
-
-png(file="GO_analysis/treatment_fisher_redundant_terms_removed.png", width=9, height=8, units="in", res=500)
-ggplot(merge_treatment, aes(x=Term, y=-log10(classicFisher))) +
-  stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill="orange", color="orange") +
-  xlab("") +
-  ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
-  ggtitle("Treatment") +
-  scale_y_continuous(limits = c(0, max(-log10(merge_treatment$classicFisher))+2)) + 
-  theme_bw(base_size=24) +
-  theme(
-    legend.position='none',
-    legend.background=element_rect(),
-    plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
-    axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
-    axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-    axis.title=element_text(size=12, face="bold"),
-    legend.key=element_blank(),     #removes the border
-    legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-    legend.text=element_text(size=12),  #Text size
-    title=element_text(size=12)) +
-  guides(colour=guide_legend(override.aes=list(size=2.5))) +
-  coord_flip()
+png(file='GO_analysis/treat_fisher_all_terms.png', width=9, height=8, units="in", res=500)
+treat_plot
 dev.off()
 
 #------------------------------------------------------------------------------
-# Interaction
+# Type
+type_plot = plot_result(res.type.mf, 'purple')
+type_plot
 
-revigo_int = read.table("GO_analysis/Revigo_MF_Int_OnScreenTable.tsv", header=TRUE, sep="\t")
-
-merge_int = merge(goEnrichment_int, revigo_int, by.x = "GO.ID", by.y = "TermID")
-
-merge_int = subset(merge_int, Representative == "null")
-
-merge_int = merge_int[,c("GO.ID","Term", "classicFisher")]
-
-png(file="GO_analysis/int_fisher_redundant_terms_removed.png", width=9, height=8, units="in", res=500)
-ggplot(merge_int, aes(x=Term, y=-log10(classicFisher))) +
-  stat_summary(geom = "bar", fun.y = mean, position = "dodge", fill="steelblue", color="steelblue") +
-  xlab("") +
-  ylab(bquote(Enrichment * " " ~(-Log[10]~ italic(P-value)))) +
-  ggtitle("Interaction") +
-  scale_y_continuous(limits = c(0, max(-log10(merge_int$classicFisher))+2)) + 
-  theme_bw(base_size=24) +
-  theme(
-    legend.position='none',
-    legend.background=element_rect(),
-    plot.title=element_text(angle=0, size=12, face="bold", vjust=1),
-    axis.text.x=element_text(angle=0, size=12, face="bold", hjust=1.10),
-    axis.text.y=element_text(angle=0, size=12, face="bold", vjust=0.5),
-    axis.title=element_text(size=12, face="bold"),
-    legend.key=element_blank(),     #removes the border
-    legend.key.size=unit(1, "cm"),      #Sets overall area/size of the legend
-    legend.text=element_text(size=12),  #Text size
-    title=element_text(size=12)) +
-  guides(colour=guide_legend(override.aes=list(size=2.5))) +
-  coord_flip()
+png(file='GO_analysis/type_fisher_all_terms.png', width=9, height=8, units="in", res=500)
+type_plot
 dev.off()
+
