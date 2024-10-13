@@ -137,52 +137,56 @@ table(subset_annot$Species.Tree.Node)
 # table(subset_annot$Species.Tree.Node)
 # =============================================================================
 
-treat_enricher = enricher(treat_genes, minGSSize=1, maxGSSize=11000, universe=gene_universe, TERM2GENE=subset_annot)
-treat_enricher_df = data.frame(treat_enricher)
-write.table(treat_enricher_df, "orthofinder_3/permutation/treat_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-barplot(treat_enricher, showCategory=20) 
-
-dotplot(treat_enricher, showCategory=30) + 
-  ggtitle("Treatment") + 
-  theme(
-    plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
-    axis.title.x = element_text(size = 14, face ="bold"), 
-    axis.text.x = element_text(size = 12),
-    axis.text.y = element_text(size = 18, face ="bold"),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
-    )
+enrichment_plus_plot = function(gene_list, save_result, plot_title){
+  enrichment_res = enricher(gene_list, 
+                            minGSSize=1, 
+                            maxGSSize=11000, 
+                            universe=gene_universe, 
+                            TERM2GENE=subset_annot)
+  
+  enrichment_res_df = data.frame(enrichment_res)
+  print(enrichment_res_df)
+  
+  if (nrow(enrichment_res_df) != 0){
+    write.table(enrichment_res_df, 
+                save_result, 
+                quote=FALSE, 
+                sep="\t",
+                row.names=TRUE, 
+                col.names=TRUE)
+    
+    dotplot = dotplot(enrichment_res, showCategory=30) + 
+      ggtitle(plot_title) + 
+      theme(
+        plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
+        axis.title.x = element_text(size = 14, face ="bold"), 
+        axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 18, face ="bold"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)
+      )
+    return(dotplot) 
+  }
+}
 
 #------------------------------------------------------------------------------
-type_enricher = enricher(type_genes, minGSSize=1, maxGSSize=11000, universe=gene_universe, TERM2GENE=subset_annot)
-type_enricher_df = data.frame(type_enricher)
-write.table(type_enricher_df, "orthofinder_3/permutation/type_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-barplot(type_enricher, showCategory=20) 
+# Treatment
 
-dotplot(type_enricher, showCategory=30) + 
-  ggtitle("Type") + 
-  theme(
-    plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
-    axis.title.x = element_text(size = 14, face ="bold"), 
-    axis.text.x = element_text(size = 12),
-    axis.text.y = element_text(size = 18, face ="bold"),
-    legend.text = element_text(size = 12),
-    legend.title = element_text(size = 14)
-  )
-
+treatment_dotplot = enrichment_plus_plot(treat_genes,
+                                         "orthofinder_3/permutation/treat_enricher_df.txt",
+                                         "Treatment")
+treatment_dotplot
 #------------------------------------------------------------------------------
-int_enricher = enricher(int_genes, minGSSize=1, maxGSSize=11000, universe=gene_universe, TERM2GENE=subset_annot)
-int_enricher_df = data.frame(int_enricher)
-# write.table(int_enricher_df, "orthofinder_3/permutation/int_enricher_df.txt", quote=FALSE, sep="\t",row.names=TRUE, col.names=TRUE)
-# barplot(int_enricher, showCategory=20) 
-# 
-# dotplot(int_enricher, showCategory=30) + 
-#   ggtitle("Interaction") + 
-#   theme(
-#     plot.title = element_text(size = 24, face ="bold", hjust = 0.5),
-#     axis.title.x = element_text(size = 14, face ="bold"), 
-#     axis.text.x = element_text(size = 12),
-#     axis.text.y = element_text(size = 18, face ="bold"),
-#     legend.text = element_text(size = 12),
-#     legend.title = element_text(size = 14)
-#   )
+# Type
+
+type_dotplot = enrichment_plus_plot(type_genes,
+                                    "orthofinder_3/permutation/type_enricher_df.txt",
+                                    "Type")
+type_dotplot
+#------------------------------------------------------------------------------
+# Interaction
+
+interaction_dotplot = enrichment_plus_plot(int_genes,
+                                           "orthofinder_3/permutation/int_enricher_df.txt",
+                                           "Interaction")
+interaction_dotplot
