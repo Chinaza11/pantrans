@@ -1,12 +1,4 @@
 #!/bin/bash
-#SBATCH --partition=Orion
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=16
-#SBATCH --job-name=star
-#SBATCH --mem=128gb
-#SBATCH --time=24:00:00
-#SBATCH --mail-user=cnnamdi@charlotte.edu
-#SBATCH --mail-type=ALL
 
 echo "======================================================"
 echo "Start Time  : $(date)"

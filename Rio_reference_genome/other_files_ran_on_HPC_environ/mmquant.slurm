@@ -1,14 +1,5 @@
 #! /bin/bash
 
-#SBATCH --partition=Orion
-#SBATCH --job-name=mmquant
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4
-#SBATCH --mem=32GB
-#SBATCH --time=24:00:00
-#SBATCH --mail-user=cnnamdi@charlotte.edu
-#SBATCH --mail-type=ALL
-
 echo "======================================================"
 echo "Start Time  : $(date)"
 echo "Submit Dir  : $SLURM_SUBMIT_DIR"

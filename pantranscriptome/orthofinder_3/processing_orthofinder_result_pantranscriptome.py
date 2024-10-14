@@ -94,19 +94,6 @@ def unassigned_genes(gene, index, column_name):
         if gene == gene2:
             annot.at[index, "UnassignedGenes"] = "UnassignedGenes"
 
-prefix_to_column = {
-    'SbiCamber': 'sorghumChineseamber',
-    'SbiGrassl': 'sorghumGrassl',
-    'SbiLeoti': 'sorghumLeoti',
-    'SbiPI229841': 'sorghumPI229841',
-    'SbiPI297155': 'sorghumPI297155',
-    'SbiPI329311': 'sorghumPI329311',
-    'SbiPI506069': 'sorghumPI506069',
-    'SbiPI510757': 'sorghumPI510757',
-    'SbiPI655972': 'sorghumPI655972',
-    'SbiPI563295': 'sorghumRioNAM'
-}
-
 for index, gene in annot['sequence_name'].items():
     for prefix, column_name in prefix_to_column.items():
         if gene.startswith(prefix):
