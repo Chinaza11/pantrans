@@ -25,7 +25,7 @@ rio = upset(fromList(rio_listInput),
             order.by="freq", 
             mainbar.y.label="DEGs Intersections", 
             sets.x.label="DEGs Per Effect", 
-            text.scale=c(1.5, 1.5, 1.25, 1.1, 2, 2), 
+            text.scale=c(1.25, 1.25, 1, 0.85, 1.5, 1.75), 
             sets.bar.color=c('steelblue','purple','orange'),
             set_size.scale_max = 2000,
             shade.color = "gray50")
@@ -47,7 +47,7 @@ pan_t = upset(fromList(pant_listInput),
               order.by="freq", 
               mainbar.y.label="DEGs Intersections", 
               sets.x.label="DEGs Per Effect", 
-              text.scale=c(1.5, 1.5, 1.25, 1.1, 2, 2), 
+              text.scale=c(1.25, 1.25, 1, 0.85, 1.5, 1.75), 
               sets.bar.color=c('steelblue','purple','orange'),
               set_size.scale_max = 2000,
               shade.color = "gray50")
@@ -57,7 +57,7 @@ pan_t
 # Both plots in one layout
 # =============================================================================
 
-png("permutation/UpSetR_plot.png", width=10, height=10, units="in", res=500)
+png("permutation/UpSetR_plot.jpg", width=20, height=20, units="cm", res=300)
 
 rio_x = plot_grid(NULL, rio$Main_bar, rio$Sizes, rio$Matrix, 
                   nrow=2, align='hv', rel_heights = c(3.5,1.5), 

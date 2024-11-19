@@ -98,7 +98,7 @@ get_plot = function(df, source){
   
   plot = ggplot(df, aes(x, y, color=comparison)) +
     geom_point(aes(size=-(log_pval)), alpha=0.5) +
-    geom_text_repel(data=head(df,15), aes(label=description), size=3.5, color='black') +
+    geom_text_repel(data=head(df,15), aes(label=description), size=1.85, color='black') +
     scale_color_manual(values = c('unique'=color, 'not_unique'='#D3D3D3')) + 
     xlab('') +
     ylab('') +
@@ -157,7 +157,7 @@ ggpubr::ggarrange(rio_treat_plot, pant_treat_plot,
                   labels = "AUTO")
 dev.off()
 
-png(file="permutation/terms_type_n_interaction.png", width=16, height=16, units="in", res=300)
+png(file="permutation/terms_type_n_interaction.jpg", width=20, height=20, units="cm", res=300)
 ggpubr::ggarrange(rio_type_plot, pant_type_plot,
                   rio_int_plot, pant_int_plot,
                   ncol=2, nrow=2,

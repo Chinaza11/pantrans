@@ -47,8 +47,13 @@ star_plot_2 = ggplot(star_2, aes(x = Cat, y = Percentage, fill=factor(Categories
   facet_grid(~ Samples) +
   theme(legend.position="top", 
         legend.title = element_blank(), 
+        legend.text=element_text(size=7),
+        legend.key.size=unit(0.35, "cm"),
         axis.title.x=element_blank(),
-        strip.text.x = element_text(size=8)) +
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(size=6),
+        axis.text.y=element_text(size=6),
+        strip.text.x = element_text(size=4.75)) +
   scale_fill_manual(values = c("orange", 
                                "black", 
                                "purple",
@@ -128,8 +133,13 @@ mmquant_plot2.1 = ggplot(mmquant_2.1, aes(x = Cat, y = Million, fill=factor(Cate
   facet_grid(~ samples) +
   theme(legend.position="top", 
         legend.title = element_blank(), 
+        legend.text=element_text(size=7),
+        legend.key.size=unit(0.35, "cm"),
         axis.title.x=element_blank(),
-        strip.text.x = element_text(size=8)) +
+        axis.title.y=element_text(size=8),
+        axis.text.x=element_text(size=6),
+        axis.text.y=element_text(size=6),
+        strip.text.x = element_text(size=4.75)) +
   scale_fill_manual(values = c("orange", 
                                "purple", 
                                "green")) +
@@ -154,7 +164,7 @@ dev.off()
 # Final plots: version 2.0 
 # =============================================================================
 
-png(file="final_processing_and_plotting/star_n_mmquant_plot_2.png", width=12, height=12, units="in", res=300)
+png(file="final_processing_and_plotting/star_n_mmquant_plot_2.jpg", width=20, height=20, units="cm", res=300)
 
 ggarrange(star_plot_2, mmquant_plot2.1, 
           nrow=2,

@@ -29,7 +29,7 @@ type_venn = ggvenn(
               show_percentage = F,
               set_name_color = 'white',
               fill_color = c("#CC79A7", "#0072B2"),
-              text_size = 6,
+              text_size = 4,
               auto_scale = T)
 type_venn
 
@@ -55,7 +55,7 @@ int_venn = ggvenn(
             show_percentage = F,
             set_name_color = 'white',
             fill_color = c("#CC79A7", "#0072B2"),
-            text_size = 6,
+            text_size = 4,
             auto_scale = T)
 int_venn
 
@@ -63,7 +63,7 @@ int_venn
 # All plots in one
 # =============================================================================
 
-png(file="permutation/DEGs_orthogroup_venn.png", width=12, height=12, units="in", res=300)
+png(file="permutation/DEGs_orthogroup_venn.jpg", width=20, height=20, units="cm", res=300)
 
 ggarrange(type_venn, int_venn, nrow = 2, labels = 'AUTO')
 
