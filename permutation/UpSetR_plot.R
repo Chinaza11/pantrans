@@ -53,6 +53,10 @@ pan_t = upset(fromList(pant_listInput),
               shade.color = "gray50")
 pan_t
 
+png("permutation/pantranscriptome_UpSetR_plot.jpg", width=20, height=20, units="cm", res=300)
+pan_t
+dev.off()
+
 # =============================================================================
 # Both plots in one layout
 # =============================================================================

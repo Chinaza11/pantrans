@@ -83,7 +83,7 @@ pant_treat_df = compare_go_terms(rio_treat_df, pant_treat_df)$pant_df
 # function for plotting
 # =============================================================================
 
-get_plot = function(df, source){
+get_plot = function(df, source, label_text_size=1.85){
   names(df)[names(df) == "colour"] = "log_pval"
   df = df %>% select(-size)
   
@@ -98,7 +98,7 @@ get_plot = function(df, source){
 
   plot = ggplot(df, aes(x, y, color=comparison)) +
     geom_point(aes(size=-(log_pval)), alpha=0.5) +
-    geom_text_repel(data=head(df,15), aes(label=description), size=1.85, color='black') +
+    geom_text_repel(data=head(df,15), aes(label=description), size=label_text_size, color='black') +
     scale_color_manual(values = c('unique'=color, 'not_unique'='#D3D3D3')) + 
     xlab('') +
     ylab('') +
@@ -120,33 +120,30 @@ get_plot = function(df, source){
 # plotting
 # =============================================================================
 
-rio_treat_plot = get_plot(rio_treat_df, 'rio')
-rio_type_plot = get_plot(rio_type_df, 'rio')
-rio_int_plot = get_plot(rio_int_df, 'rio')
-pant_treat_plot = get_plot(pant_treat_df, 'pantranscriptome')
-pant_type_plot = get_plot(pant_type_df, 'pantranscriptome')
-pant_int_plot = get_plot(pant_int_df, 'pantranscriptome')
+rio_treat_plot = get_plot(rio_treat_df, 'rio', label_text_size=4.0)
+rio_type_plot = get_plot(rio_type_df, 'rio', label_text_size=4.5)
+rio_int_plot = get_plot(rio_int_df, 'rio', label_text_size=2)
+pant_treat_plot = get_plot(pant_treat_df, 'pantranscriptome', label_text_size=4.0)
+pant_type_plot = get_plot(pant_type_df, 'pantranscriptome', label_text_size=4.5)
+pant_int_plot = get_plot(pant_int_df, 'pantranscriptome', label_text_size=2)
 
 # =============================================================================
 # saving plots
 # =============================================================================
 
-png(file="final_processing_and_plotting/terms_treatment.png", width=16, height=10, units="in", res=300)
+png(file="final_processing_and_plotting/terms_treatment.jpg", width=16, height=10, units="in", res=300)
 ggpubr::ggarrange(rio_treat_plot, pant_treat_plot,
-                  ncol=2, nrow=1,
-                  labels = "AUTO")
+                  ncol=2, nrow=1)
 dev.off()
 
-png(file="final_processing_and_plotting/terms_type.png", width=16, height=10, units="in", res=300)
+png(file="final_processing_and_plotting/terms_type.jpg", width=16, height=10, units="in", res=300)
 ggpubr::ggarrange(rio_type_plot, pant_type_plot,
-                  ncol=2, nrow=1,
-                  labels = "AUTO")
+                  ncol=2, nrow=1)
 dev.off()
 
 png(file="final_processing_and_plotting/terms_interaction.jpg", width=20, height=12.5, units="cm", res=300)
 ggpubr::ggarrange(rio_int_plot, pant_int_plot,
-                  ncol=2, nrow=1,
-                  labels = "AUTO")
+                  ncol=2, nrow=1)
 dev.off()
 
 png(file="final_processing_and_plotting/terms_all.png", width=16, height=10, units="in", res=300)

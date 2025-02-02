@@ -101,3 +101,18 @@ ggarrange(
   nrow = 2)
 
 dev.off()
+
+# =============================================================================
+
+png(file="final_processing_and_plotting/DEGs_orthogroup_venn_2.jpg", width=20, height=10, units="cm", res=300)
+
+ggarrange(treat_venn, type_venn, int_venn, 
+          nrow = 1,
+          labels = c('Treatment',
+                     'Type',
+                     'Interaction'),
+          label.y = 0.85,
+          hjust = c(-0.5,-0.9,-0.5),
+          widths = 4)
+
+dev.off()
